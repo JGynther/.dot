@@ -1,5 +1,5 @@
 {
-  description = "Example nix-darwin system flake";
+  description = "Macos Nix";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -7,37 +7,49 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
-  let
-    configuration = { pkgs, ... }: {
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages =
-        [ pkgs.vim
-        ];
+  outputs =
+    {
+      self,
+      nix-darwin,
+      nixpkgs,
+    }@inputs:
+    let
+      username = "gynther";
+      hostname = "MacBook-Air";
+      system = "aarch64-darwin";
+      specialArgs = { inherit inputs username hostname; };
 
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
+      configuration =
+        { pkgs, ... }:
+        {
+          nix.enable = false; # Determinate Nix specific
+          nix.settings.experimental-features = "nix-command flakes";
 
-      # Enable alternative shell support in nix-darwin.
-      # programs.fish.enable = true;
+          system.configurationRevision = self.rev or self.dirtyRev or null;
 
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
+          # Used for backwards compatibility, please read the changelog before changing.
+          # $ darwin-rebuild changelog
+          system.stateVersion = 6;
 
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 6;
+          # The platform the configuration will be used on.
+          nixpkgs.hostPlatform = system;
 
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
+          users.users.${username} = {
+            home = "/Users/${username}";
+          };
+
+          security.pam.services.sudo_local.touchIdAuth = true;
+
+          environment.systemPackages = with pkgs; [
+            nixd
+            nixfmt-rfc-style
+          ];
+        };
+    in
+    {
+      darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
+        inherit system specialArgs;
+        modules = [ configuration ];
+      };
     };
-  in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#simple
-    darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
-    };
-  };
 }

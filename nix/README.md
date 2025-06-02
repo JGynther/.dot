@@ -1,5 +1,5 @@
-`nix/` is symlinked to `/etc/nix-darwin`
+`.dot/nix/` is symlinked to `/etc/nix-darwin`
 
 ```sh
-sudo ln -s ~/nix /etc/nix-darwin
+sudo ln -s ~/.dot/nix /etc/nix-darwin
 ```
