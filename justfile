@@ -6,3 +6,6 @@ switch:
 
 update:
     nix flake update
+
+fmt:
+    alejandra --quiet nix/
