@@ -25,6 +25,10 @@
           nix.enable = false; # Determinate Nix specific
           nix.settings.experimental-features = "nix-command flakes";
 
+          environment.variables = {
+            NH_FLAKE = "/etc/nix-darwin";
+          };
+
           system.configurationRevision = self.rev or self.dirtyRev or null;
 
           # Used for backwards compatibility, please read the changelog before changing.
@@ -38,11 +42,14 @@
             home = "/Users/${username}";
           };
 
+          # https://discussions.apple.com/thread/255187302?sortBy=rank
           security.pam.services.sudo_local.touchIdAuth = true;
 
           environment.systemPackages = with pkgs; [
             nixd
             nixfmt-rfc-style
+            just
+            nh
           ];
         };
     in
