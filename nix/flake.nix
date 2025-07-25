@@ -5,12 +5,15 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     self,
     nix-darwin,
-    nixpkgs,
+    fenix,
+    ...
   } @ inputs: let
     username = "gynther";
     hostname = "MacBook-Air";
@@ -46,6 +49,7 @@
         just
         nh
         alejandra # nixfmt-rfc-style
+        fenix.packages.${system}.stable.toolchain
       ];
     };
   in {
