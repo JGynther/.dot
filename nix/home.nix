@@ -31,6 +31,10 @@
     duckdb
   ];
 
+  home.file = {
+    ".config/ghostty/config".source = ../ghostty.conf;
+  };
+
   programs.git = {
     enable = true;
 

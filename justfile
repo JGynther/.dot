@@ -5,7 +5,7 @@ switch:
     nh darwin switch
 
 update:
-    nix flake update
+    nix flake update nixpkgs --flake ./nix/flake.nix
 
 fmt:
     alejandra --quiet nix/
