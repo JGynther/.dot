@@ -15,7 +15,7 @@
     doggo # DNS
     atuin # shell history
     fzf # fuzzy finder
-    starship # shell prompt
+    #starship # shell prompt
     fastfetch
     just # command runner
 
@@ -74,7 +74,42 @@
       venv = "source .venv/bin/activate";
     };
 
-    initContent = builtins.readFile ../.zshrc;
+    initContent = builtins.readFile ../zsh.conf;
+  };
+
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = "$username$directory$git_branch$git_metrics$time$cmd_duration$line_break$character";
+
+      username = {
+        show_always = true;
+      };
+
+      character = {
+        success_symbol = "[>](bold fg:green)";
+        error_symbol = "[x](bold fg:red)";
+      };
+
+      time = {
+        disabled = false;
+        time_format = "%H:%M:%S%.6f";
+        style = "bold fg:blue";
+      };
+
+      cmd_duration = {
+        min_time = 0;
+        show_milliseconds = true;
+      };
+
+      git_branch = {
+        symbol = " ";
+      };
+
+      git_metrics = {
+        disabled = false;
+      };
+    };
   };
 
   # The state version is required and should stay at the version you
