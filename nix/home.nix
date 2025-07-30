@@ -15,7 +15,6 @@
     doggo # DNS
     atuin # shell history
     fzf # fuzzy finder
-    #starship # shell prompt
     fastfetch
     just # command runner
 
