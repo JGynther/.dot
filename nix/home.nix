@@ -45,6 +45,32 @@
     delta.enable = true;
 
     extraConfig.init.defaultBranch = "main";
+    ignores = [".DS_Store"];
+  };
+
+  programs.zsh = {
+    enable = true;
+    autosuggestion.enable = true;
+
+    sessionVariables = {
+      SHELL = "zsh";
+      SSH_AUTH_SOCK = "/Users/gynther/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
+      PATH = "/Users/gynther/.cargo/bin:$PATH"; #:$HOME/.bun/bin
+    };
+
+    shellAliases = {
+      ".." = "cd ..";
+      z = "zed .";
+      n = "zed ~/.dot";
+      switch = "just -f ~/.dot/justfile switch";
+      cat = "bat";
+      ls = "eza -F";
+      python = "python3";
+      pip = "python -m pip";
+      venv = "source .venv/bin/activate";
+    };
+
+    initContent = builtins.readFile ../.zshrc;
   };
 
   # The state version is required and should stay at the version you
