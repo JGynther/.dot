@@ -7,55 +7,35 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     self,
     nix-darwin,
     fenix,
+    home-manager,
     ...
   } @ inputs: let
     username = "gynther";
     hostname = "MacBook-Air";
     system = "aarch64-darwin";
     specialArgs = {inherit inputs username hostname;};
-
-    configuration = {pkgs, ...}: {
-      nix.enable = false; # Determinate Nix specific
-      nix.settings.experimental-features = "nix-command flakes";
-
-      environment.variables = {
-        NH_FLAKE = "/etc/nix-darwin";
-      };
-
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 6;
-
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = system;
-
-      users.users.${username} = {
-        home = "/Users/${username}";
-      };
-
-      # https://discussions.apple.com/thread/255187302?sortBy=rank
-      security.pam.services.sudo_local.touchIdAuth = true;
-
-      environment.systemPackages = with pkgs; [
-        nixd
-        just
-        nh
-        alejandra # nixfmt-rfc-style
-        fenix.packages.${system}.stable.toolchain
-      ];
-    };
   in {
     darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
       inherit system specialArgs;
-      modules = [configuration];
+      modules = [
+        ./conf.nix
+        home-manager.darwinModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = specialArgs;
+          home-manager.backupFileExtension = "bak";
+          home-manager.users."${username}" = import ./home.nix;
+        }
+      ];
     };
   };
 }
