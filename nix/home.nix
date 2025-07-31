@@ -31,6 +31,7 @@
   ];
 
   home.file = {
+    # programs.ghostty is currently marked broken
     ".config/ghostty/config".source = ../ghostty.conf;
   };
 
