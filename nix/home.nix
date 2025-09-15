@@ -13,21 +13,22 @@
     eza # ls
     bat # cat
     doggo # DNS
-    atuin # shell history
-    fzf # fuzzy finder
     fastfetch
     just # command runner
 
     # Langs
-    inputs.fenix.packages.${system}.stable.toolchain # Rust
+    inputs.fenix.packages.${system}.complete.toolchain # Rust
     gleam
     python3
     uv
     bun
+    nodejs_24
 
     # Data
     sqlite
     duckdb
+
+    awscli2
   ];
 
   home.file = {
@@ -75,7 +76,9 @@
       venv = "source .venv/bin/activate";
     };
 
-    initContent = builtins.readFile ../zsh.conf;
+    completionInit = ''
+      complete -C '${pkgs.awscli2}/bin/aws_completer' aws
+    '';
   };
 
   programs.starship = {
@@ -111,6 +114,16 @@
         disabled = false;
       };
     };
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   # The state version is required and should stay at the version you

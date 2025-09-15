@@ -11,6 +11,7 @@
   };
 
   # https://discussions.apple.com/thread/255187302?sortBy=rank
+  # /usr/bin/defaults write ~/Library/Preferences/com.apple.security.authorization.plist ignoreArd -bool TRUE
   security.pam.services.sudo_local.touchIdAuth = true;
 
   homebrew = {
@@ -18,7 +19,7 @@
     user = username;
     onActivation.cleanup = "uninstall";
     taps = [];
-    brews = [];
+    brews = ["icann-rdap"];
     casks = [
       "discord"
       "firefox"
@@ -29,6 +30,7 @@
       "ghostty"
       "tailscale-app"
       "zed"
+      "epic-games"
     ];
   };
 
